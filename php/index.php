@@ -1,96 +1,80 @@
 <?php
 session_start();
-
-// Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
+    exit;
 }
 
-// Afficher un message de bienvenue
-// echo 'Bienvenue, ' . $_SESSION['username'] . '!';
+// Utilisation du fichier de config global pour la connexion
+require_once __DIR__ . '/config.php';
 ?>
-
 <!DOCTYPE html>
-<html>
-
+<html lang="fr">
 <head>
-    <title>Liste des sites</title>
+    <meta charset="UTF-8">
+    <title>Liste des sites | Administration</title>
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
     <link rel="shortcut icon" href="../assets/img/logo_rounded.png" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
-
 <body>
     <h1>Liste des sites</h1>
-
     <?php
-    // Établir la connexion à la base de données
-    $conn = mysqli_connect("localhost", "root", "Rivotril_362778", "portail");
-
-    // Vérifier la connexion
-    if (!$conn) {
-        die("Erreur de connexion à la base de données: " . mysqli_connect_error());
-    }
-
-    // Vérifier si un formulaire de mise à jour a été soumis
+    // Mise à jour de l'ordre d'apparition
     if (isset($_POST['update_order'])) {
         $site_orders = $_POST['site_order'];
-
-        // Mettre à jour l'ordre d'apparition pour chaque site
         foreach ($site_orders as $site_id => $site_order) {
-            $site_id = (int) $site_id;
-            $site_order = (int) $site_order;
-            $query = "UPDATE sites_web SET ordre_apparition = $site_order WHERE id = $site_id";
-            mysqli_query($conn, $query);
+            $stmt = $mysqli->prepare("UPDATE sites_web SET ordre_apparition = ? WHERE id = ?");
+            $stmt->bind_param("ii", $site_order, $site_id);
+            $stmt->execute();
+            $stmt->close();
         }
         echo "<p>L'ordre d'apparition a été mis à jour avec succès.</p>";
     }
 
-    // Récupérer tous les sites de la base de données triés par ordre d'apparition
+    // Récupérer tous les sites
     $query = "SELECT * FROM sites_web ORDER BY ordre_apparition ASC";
-    $result = mysqli_query($conn, $query);
+    $result = $mysqli->query($query);
 
-    // Afficher le formulaire de mise à jour de l'ordre d'apparition
+    // Afficher le formulaire pour réorganiser les sites
     echo '<form method="post">';
     echo '<ol id="sortable">';
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo '<li class="ui-state-default" data-order="' . $row['ordre_apparition'] . '">' . $row['titre'] . ' - ' . $row['url'] . '<input type="hidden" name="site_order[' . $row['id'] . ']" value="' . $row['ordre_apparition'] . '"></li>';
+    while ($row = $result->fetch_assoc()) {
+        $titre = htmlspecialchars($row['titre']);
+        $url = htmlspecialchars($row['url']);
+        $order = (int)$row['ordre_apparition'];
+        echo '<li class="ui-state-default" data-order="' . $order . '">';
+        echo $titre . ' - ' . $url;
+        echo '<input type="hidden" name="site_order[' . $row['id'] . ']" value="' . $order . '">';
+        echo '</li>';
     }
     echo '</ol>';
     echo '<button class="button" type="submit" name="update_order">Mettre à jour l\'ordre</button>';
     echo '</form>';
 
-    // Fermer la connexion à la base de données
-    mysqli_close($conn);
+    $result->free();
+    $mysqli->close();
     ?>
-
-    <!-- Bouton pour ajouter un nouveau site -->
+    <!-- Boutons d'action -->
     <a class="button" href="new-site.php">Ajouter un site</a>
-    <!-- Bouton pour retirer un site -->
     <a class="button" href="delete.php">Retirer un site</a>
-
     <br><br>
     <a class="button button_return" href="../">Retourner à la page d'accueil</a>
-
-    <!-- Chargement de la bibliothèque jQuery et jQuery UI -->
+    <!-- jQuery UI pour le drag and drop -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
-        // Fonction pour rendre les éléments de la liste "drag and drop"
+        // Drag & drop pour réorganisation
         $(function () {
             $("#sortable").sortable({
                 update: function (event, ui) {
-                    // Mettre à jour les attributs data-order des éléments avec leurs nouvelles positions
                     $(this).children().each(function (index) {
-                        $(this).attr('data-order', index);
-                        $(this).find('input').val(index); // Mettre à jour la valeur du champ caché
+                        $(this).find('input').val(index);
                     });
                 }
             });
             $("#sortable").disableSelection();
         });
     </script>
-
 </body>
-
 </html>
