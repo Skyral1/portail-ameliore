@@ -24,7 +24,7 @@ require_once __DIR__ . '/config.php';
 </head>
 
 <body>
-    <header>
+    <header class="site-header">
         <nav>
             <?php if (!$is_connected): ?>
                 <a href="php/login.php" class="button header-login">Connexion</a>

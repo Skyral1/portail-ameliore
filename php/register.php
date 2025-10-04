@@ -32,8 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt->close();
 
-            $stmt = $mysqli->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-            $stmt->bind_param("s", $username, $hash);
+            $stmt = $mysqli->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+            $default_role = "user";
+            $stmt->bind_param("sss", $username, $hash, $default_role);
             if ($stmt->execute()) {
                 $message = "Compte créé avec succès ! <a href='login.php'>Se connecter</a>";
             } else {
@@ -57,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <header>
+    <header class="site-header">
         <nav>
             <?php if (!$is_connected): ?>
                 <a href="php/login.php" class="button header-login">Connexion</a>
