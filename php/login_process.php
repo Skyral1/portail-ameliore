@@ -1,16 +1,26 @@
 <?php
-// Vérifier les informations de connexion
-$username = $_POST['username'];
+session_start();
+require_once __DIR__ . '/config.php';
+
+if (!isset($_POST['username'], $_POST['password'])) {
+    header('Location: login.php?error=1');
+    exit;
+}
+
+$username = trim($_POST['username']);
 $password = $_POST['password'];
 
-// Vérifier si les informations sont correctes
-if ($username === 'Skyral' && $password === 'motdecode') {
-    // Informations de connexion correctes
-    session_start();
+$stmt = $mysqli->prepare("SELECT password FROM users WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$stmt->bind_result($hashed_password);
+if ($stmt->fetch() && password_verify($password, $hashed_password)) {
     $_SESSION['username'] = $username;
-    header('Location: ./');
+    header('Location: index.php');
 } else {
-    // Informations de connexion incorrectes
     header('Location: login.php?error=1');
 }
+$stmt->close();
+$mysqli->close();
+exit;
 ?>
