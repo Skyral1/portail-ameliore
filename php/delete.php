@@ -1,5 +1,12 @@
 <?php
-// Vérifie que l'utilisateur est admin
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit;
+}
+require_once __DIR__ . '/config.php'; // TOUJOURS avant toute utilisation de mysqli
+
+// (Si besoin) Vérification du rôle admin :
 $stmt = $mysqli->prepare("SELECT role FROM users WHERE username = ?");
 $stmt->bind_param("s", $_SESSION['username']);
 $stmt->execute();
@@ -10,7 +17,6 @@ if ($role !== 'admin') {
     header('Location: ../index.php');
     exit;
 }
-require_once __DIR__ . '/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
