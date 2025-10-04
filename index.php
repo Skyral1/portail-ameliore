@@ -1,4 +1,9 @@
-<?php require_once __DIR__ . '/php/config.php'; ?>
+<?php
+session_start();
+$is_connected = isset($_SESSION['username']);
+require_once __DIR__ . '/php/config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -12,15 +17,22 @@
 <body>
     <header class="site-header">
         <nav>
+            <?php if (!$is_connected): ?>
+                <a href="php/login.php" class="button header-login">Connexion</a>
+            <?php else: ?>
+                <a href="php/index.php" class="button header-login">Modifier</a>
+            <?php endif; ?>
+        </nav>
+    </header>
+
+    <header class="site-header">
+        <nav>
             <a href="php/login.php" class="button header-login">Connexion</a>
         </nav>
     </header>
 
     <main class="main-container">
         <h1>Bibliothèque Informatique</h1>
-        <div style="text-align:center;margin-bottom:16px;">
-            <a class="button" href="./php/index.php">Modifier</a>
-        </div>
         <section class="card-container">
             <?php
             $query = "SELECT * FROM sites_web ORDER BY ordre_apparition ASC";
