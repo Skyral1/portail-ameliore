@@ -1,34 +1,44 @@
-# Node modules
-node_modules/
+# Fichiers de config sensibles
+php/config.php
 
-# Build output
-dist/
-build/
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment variables
+# Identifiants/API (si jamais tu ajoutes ce genre de fichiers)
+*.env
 .env
-.env.local
-.env.*.local
-config.php
 
-# OS generated files
+# Cache et logs PHP
+*.log
+*.cache
+cache/
+logs/
+
+# Fichiers de sessions PHP (par exemple en set via session.save_path)
+sess_*
+
+# Fichiers temporaires
+*.tmp
+*.temp
+
+# Dossiers d’environnements locaux / IDE
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
 
-# IDE files
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
+# Dépendances Node éventuelles (si tu ajoutes Node plus tard)
+node_modules/
 
-# Coverage reports
-coverage/
+# Système
+*.bak
+*.swp
+*~
 
-# Misc
-*.log
-*.tgz
+# Fichiers de sauvegarde d'éditeurs
+*.bak
+*~
+
+# Ignorer tout dump SQL ou sauvegarde manuelle
+*.sql
+*.sql.gz
+
+# Fichiers générés
+/dist
