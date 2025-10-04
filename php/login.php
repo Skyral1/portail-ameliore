@@ -12,6 +12,7 @@ if (isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <title>Connexion | Portail</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="../assets/img/logo.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
 </head>
 

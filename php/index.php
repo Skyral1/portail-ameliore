@@ -9,6 +9,7 @@ require_once __DIR__ . '/config.php';
     <meta charset="UTF-8">
     <title>Liste des sites | Administration</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="../assets/img/logo.ico" type="image/x-icon">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
