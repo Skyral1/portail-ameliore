@@ -1,9 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])) {
-    header('Location: login.php');
-    exit;
-}
+if (!isset($_SESSION['username'])) { header('Location: login.php'); exit; }
 require_once __DIR__ . '/config.php';
 ?>
 <!DOCTYPE html>
@@ -11,26 +8,22 @@ require_once __DIR__ . '/config.php';
 <head>
     <meta charset="UTF-8">
     <title>Supprimer un site</title>
-    <link rel="shortcut icon" href="../assets/img/logo_rounded.png" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+<main class="main-container">
     <h1>Suppression d’un site</h1>
     <?php
-    // Gestion suppression
     if (isset($_POST['delete_site'], $_POST['site_id'])) {
         $site_id = (int)$_POST['site_id'];
         $stmt = $mysqli->prepare("DELETE FROM sites_web WHERE id = ?");
         $stmt->bind_param("i", $site_id);
-        if ($stmt->execute()) {
-            echo "<p>Le site a été supprimé avec succès.</p>";
-        } else {
-            echo "<p>Erreur lors de la suppression du site.</p>";
-        }
+        echo $stmt->execute() ?
+            "<div class='error'>Le site a été supprimé avec succès.</div>"
+            : "<div class='error'>Erreur lors de la suppression du site.</div>";
         $stmt->close();
     }
-
-    // Récupération des sites
     $result = $mysqli->query("SELECT id, titre, url FROM sites_web ORDER BY ordre_apparition ASC");
     if ($result->num_rows > 0) {
         echo '<ul>';
@@ -38,11 +31,11 @@ require_once __DIR__ . '/config.php';
             $titre = htmlspecialchars($row['titre']);
             $url = htmlspecialchars($row['url']);
             echo '<li>';
-            echo "$titre - $url";
+            echo "$titre - <a href=\"$url\" target=\"_blank\">$url</a>";
             echo '<form method="post" style="display:inline;margin-left:10px;">';
             echo '<input type="hidden" name="delete_site" value="1">';
-            echo '<input type="hidden" name="site_id" value="' . (int)$row['id'] . '">';
-            echo '<button type="submit" onclick="return confirm(\'Supprimer ce site ?\')">Supprimer</button>';
+            echo '<input type="hidden" name="site_id" value="'.(int)$row['id'].'">';
+            echo '<button type="submit" class="button" onclick="return confirm(\'Supprimer ce site ?\')">Supprimer</button>';
             echo '</form>';
             echo '</li>';
         }
@@ -52,7 +45,7 @@ require_once __DIR__ . '/config.php';
     }
     $mysqli->close();
     ?>
-    <br>
     <a class="button button_return" href="index.php">Retour</a>
+</main>
 </body>
 </html>
