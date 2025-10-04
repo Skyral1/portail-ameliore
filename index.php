@@ -1,6 +1,7 @@
 <?php
 session_start();
 $is_connected = isset($_SESSION['username']);
+$username = $is_connected ? $_SESSION['username'] : '';
 require_once __DIR__ . '/php/config.php';
 ?>
 
@@ -12,35 +13,24 @@ require_once __DIR__ . '/php/config.php';
     <title>Bibliothèque Informatique</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="shortcut icon" href="./assets/img/logo.ico" type="image/x-icon">
+    <script src="./assets/js/drop-menu.js"></script>
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 
 <body>
     <header class="site-header">
         <nav>
-            <?php if (!$is_connected): ?>
-                <a href="php/login.php" class="button header-login">Connexion</a>
+            <?php if ($is_connected): ?>
+                <div class="user-menu">
+                    <button class="user-button"><?php echo htmlspecialchars($username); ?> ▼</button>
+                    <ul class="user-dropdown">
+                        <li><a href="php/index.php">Modifier</a></li>
+                        <li><a href="php/logout.php">Déconnexion</a></li>
+                    </ul>
+                </div>
             <?php else: ?>
-                <?php
-                // Chercher le rôle utilisateur si nécessaire
-                $stmt = $mysqli->prepare("SELECT role FROM users WHERE username = ?");
-                $stmt->bind_param("s", $_SESSION['username']);
-                $stmt->execute();
-                $stmt->bind_result($role);
-                $stmt->fetch();
-                $stmt->close();
-                ?>
-                <?php if ($role === 'admin'): ?>
-                    <a href="php/index.php" class="button header-login">Modifier</a>
-                <?php endif; ?>
-                <a href="php/logout.php" class="button header-logout">Déconnexion</a>
+                <a href="php/login.php" class="button header-login">Connexion</a>
             <?php endif; ?>
-        </nav>
-    </header>
-
-    <header class="site-header">
-        <nav>
-            <a href="php/login.php" class="button header-login">Connexion</a>
         </nav>
     </header>
 

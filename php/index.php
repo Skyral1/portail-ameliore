@@ -1,5 +1,7 @@
 <?php
 session_start();
+$is_connected = isset($_SESSION['username']);
+$username = $is_connected ? $_SESSION['username'] : '';
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit;
@@ -26,31 +28,27 @@ if ($role !== 'admin') {
     <title>Liste des sites | Administration</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="shortcut icon" href="../assets/img/logo.ico" type="image/x-icon">
+    <script src="../assets/js/drop-menu.js"></script>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
 <body>
     <header class="site-header">
         <nav>
-            <?php if (!$is_connected): ?>
-                <a href="php/login.php" class="button header-login">Connexion</a>
+            <?php if ($is_connected): ?>
+                <div class="user-menu">
+                    <button class="user-button"><?php echo htmlspecialchars($username); ?> ▼</button>
+                    <ul class="user-dropdown">
+                        <li><a href="php/index.php">Modifier</a></li>
+                        <li><a href="php/logout.php">Déconnexion</a></li>
+                    </ul>
+                </div>
             <?php else: ?>
-                <?php
-                // Chercher le rôle utilisateur si nécessaire
-                $stmt = $mysqli->prepare("SELECT role FROM users WHERE username = ?");
-                $stmt->bind_param("s", $_SESSION['username']);
-                $stmt->execute();
-                $stmt->bind_result($role);
-                $stmt->fetch();
-                $stmt->close();
-                ?>
-                <?php if ($role === 'admin'): ?>
-                    <a href="php/index.php" class="button header-login">Modifier</a>
-                <?php endif; ?>
-                <a href="php/logout.php" class="button header-logout">Déconnexion</a>
+                <a href="php/login.php" class="button header-login">Connexion</a>
             <?php endif; ?>
         </nav>
     </header>
+
     <main class="main-container">
         <h1>Liste des sites</h1>
         <?php
@@ -81,7 +79,6 @@ if ($role !== 'admin') {
         <nav style="margin-top:15px;">
             <a class="button" href="new-site.php">Ajouter un site</a>
             <a class="button" href="delete.php">Retirer un site</a>
-            <a class="button button_return" href="../">Retourner à l'accueil</a>
         </nav>
     </main>
 </body>

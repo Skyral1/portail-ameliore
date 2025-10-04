@@ -180,3 +180,66 @@ button:hover,
 		grid-template-columns: 1fr;
 	}
 }
+/* --- MENU UTILISATEUR --- */
+.user-menu {
+	position: relative;
+	display: inline-block;
+}
+
+.user-button {
+	background: #4e90e5;
+	color: #fff;
+	border: none;
+	border-radius: 22px;
+	padding: 9px 22px;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.user-button:hover,
+.user-menu.open .user-button {
+	background: #346bb3;
+}
+
+.user-dropdown {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 44px;
+	background: #fff;
+	min-width: 140px;
+	box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.13);
+	z-index: 99;
+	border-radius: 10px;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.user-dropdown li {
+	list-style: none;
+	border-bottom: 1px solid #e0eafc;
+}
+
+.user-dropdown li:last-child {
+	border-bottom: none;
+}
+
+.user-dropdown a {
+	display: block;
+	color: #25396f;
+	text-decoration: none;
+	padding: 13px 18px;
+	font-size: 15px;
+	transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+	background: #f4f6fa;
+}
+
+.user-menu.open .user-dropdown {
+	display: block;
+}
