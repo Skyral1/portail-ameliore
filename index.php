@@ -21,10 +21,20 @@ require_once __DIR__ . '/php/config.php';
             <?php if (!$is_connected): ?>
                 <a href="php/login.php" class="button header-login">Connexion</a>
             <?php else: ?>
-                <a href="php/index.php" class="button header-login">Modifier</a>
+                <?php
+                // Chercher le rôle utilisateur si nécessaire
+                $stmt = $mysqli->prepare("SELECT role FROM users WHERE username = ?");
+                $stmt->bind_param("s", $_SESSION['username']);
+                $stmt->execute();
+                $stmt->bind_result($role);
+                $stmt->fetch();
+                $stmt->close();
+                ?>
+                <?php if ($role === 'admin'): ?>
+                    <a href="php/index.php" class="button header-login">Modifier</a>
+                <?php endif; ?>
                 <a href="php/logout.php" class="button header-logout">Déconnexion</a>
             <?php endif; ?>
-
         </nav>
     </header>
 
