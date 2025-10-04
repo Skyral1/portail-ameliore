@@ -1,6 +1,15 @@
 <?php
-session_start();
-if (!isset($_SESSION['username'])) { header('Location: login.php'); exit; }
+// Vérifie que l'utilisateur est admin
+$stmt = $mysqli->prepare("SELECT role FROM users WHERE username = ?");
+$stmt->bind_param("s", $_SESSION['username']);
+$stmt->execute();
+$stmt->bind_result($role);
+$stmt->fetch();
+$stmt->close();
+if ($role !== 'admin') {
+    header('Location: ../index.php');
+    exit;
+}
 require_once __DIR__ . '/config.php';
 ?>
 <!DOCTYPE html>

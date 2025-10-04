@@ -22,7 +22,9 @@ require_once __DIR__ . '/php/config.php';
                 <a href="php/login.php" class="button header-login">Connexion</a>
             <?php else: ?>
                 <a href="php/index.php" class="button header-login">Modifier</a>
+                <a href="php/logout.php" class="button header-logout">Déconnexion</a>
             <?php endif; ?>
+
         </nav>
     </header>
 
