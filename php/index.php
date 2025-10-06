@@ -76,6 +76,24 @@ if ($role !== 'admin') {
         $result->free();
         $mysqli->close();
         ?>
+        <!-- Chargement de la bibliothèque jQuery et jQuery UI -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <script>
+            // Fonction pour rendre les éléments de la liste "drag and drop"
+            $(function () {
+                $("#sortable").sortable({
+                    update: function (event, ui) {
+                        // Mettre à jour les attributs data-order des éléments avec leurs nouvelles positions
+                        $(this).children().each(function (index) {
+                            $(this).attr('data-order', index);
+                            $(this).find('input').val(index); // Mettre à jour la valeur du champ caché
+                        });
+                    }
+                });
+                $("#sortable").disableSelection();
+            });
+        </script>
         <nav style="margin-top:15px;">
             <a class="button" href="new-site.php">Ajouter un site</a>
             <a class="button" href="delete.php">Retirer un site</a>
